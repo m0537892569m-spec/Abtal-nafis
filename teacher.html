@@ -1,0 +1,99 @@
+<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>لوحة المعلم | أبطال نافس</title><style>
+*{box-sizing:border-box}body{font-family:Tahoma,Arial;background:#eef5f6;color:#183c45;margin:0}header{background:#075c69;color:white;padding:22px;text-align:center}main{max-width:960px;margin:24px auto;padding:0 14px}.card{background:white;border-radius:15px;padding:22px;margin:16px 0;box-shadow:0 4px 15px #174a5517}label{display:block;font-weight:bold;margin:12px 0 5px}input,select,textarea{width:100%;border:1px solid #bed3d7;border-radius:8px;padding:12px;font:inherit}button{background:#086b75;color:white;border:0;border-radius:8px;padding:12px 18px;cursor:pointer;margin:7px 0}button.secondary{background:#526976}button.danger{background:#ad3644}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.hidden{display:none}.muted{color:#657d82;font-size:13px}.entry{border-bottom:1px solid #ddd;padding:12px 0}#message{white-space:pre-wrap;color:#a12b34}a{color:#086b75}@media(max-width:600px){.grid{grid-template-columns:1fr}}</style></head><body><header><h1>🏆 أبطال نافس | لوحة المعلم</h1><div>مبادرة ابتدائية الخليفة المأمون بانبوان</div></header><main><div id="message"></div>
+<section id="login" class="card"><h2>🔐 دخول المعلم</h2><p class="muted">تسجيل الدخول بحساب المعلم الموجود في Supabase. لا يُسمح بالتسجيل العام من هذه الصفحة.</p><label>البريد الإلكتروني</label><input id="email" type="email" autocomplete="username"><label>كلمة المرور</label><input id="password" type="password" autocomplete="current-password"><button onclick="login()">دخول</button></section>
+<div id="dashboard" class="hidden"><div class="card"><button class="secondary" onclick="logout()">تسجيل خروج</button><a href="index.html">العودة للمسابقة</a><h2>إضافة سؤال جديد</h2><form id="questionForm"><div class="grid"><div><label>المرحلة</label><select id="grade"><option value="third">ثالث ابتدائي</option><option value="sixth">سادس ابتدائي</option><option value="middle">ثالث متوسط</option></select></div><div><label>المادة</label><select id="subject"><option>رياضيات</option><option>علوم</option><option>لغتي</option><option>قراءة</option></select></div></div><label>المهارة المطلوبة</label><input id="skill" placeholder="مثال: جمع الكسور"><label>نص السؤال</label><textarea id="question" required rows="3"></textarea><div class="grid"><div><label>الإجابة الأولى</label><input id="o0" required></div><div><label>الإجابة الثانية</label><input id="o1" required></div><div><label>الإجابة الثالثة</label><input id="o2" required></div><div><label>الإجابة الرابعة</label><input id="o3" required></div></div><label>الإجابة الصحيحة</label><select id="correct"><option value="0">الأولى</option><option value="1">الثانية</option><option value="2">الثالثة</option><option value="3">الرابعة</option></select><label>مرفق اختياري (صورة أو PDF أو Word)</label><input id="attachment" type="file" accept="image/*,.pdf,.doc,.docx"><p class="muted">المرفقات تحفظ للمعلم كمرجع. لعرض السؤال للطلاب يجب كتابة نص السؤال والخيارات في الحقول أعلاه.</p><label><input type="checkbox" id="approved" style="width:auto" checked> اعتماد السؤال ونشره للطلاب</label><div><button type="submit">حفظ السؤال</button></div></form></div><section class="card"><h2>📄 استخراج 10 أسئلة من صورة أو Word أو PDF</h2><p class="muted">ارفع صورة أو ملف Word أو PDF واستخرج حتى 10 أسئلة مستقلة بخياراتها، ثم راجعها قبل الحفظ. راجع الأسئلة قبل حفظها؛ لا يتم نشر أي سؤال تلقائيًا من هذه الأداة.</p><label>المرحلة المستهدفة للأسئلة المستخرجة</label><select id="batchGrade"><option value="" selected disabled>اختر المرحلة أولًا</option><option value="third">ثالث ابتدائي</option><option value="sixth">سادس ابتدائي</option><option value="middle">ثالث متوسط</option></select><label>المادة للأسئلة المستخرجة</label><select id="batchSubject"><option value="" selected disabled>اختر المادة</option><option>رياضيات</option><option>علوم</option><option>لغتي</option><option>قراءة</option></select><label>اختيار مستند أو صورة</label><input type="file" id="batchFile" accept="image/*,.pdf,.docx,.txt" capture="environment"><button type="button" class="secondary" id="extractBtn">استخراج النص من الملف</button><p class="muted" id="extractStatus">الصور تحتاج اتصالًا بالإنترنت لتنزيل أداة التعرف على النص، وقد تحتاج تصحيحًا يدويًا. ملفات Word المدعومة: DOCX. ملفات PDF المصوّرة تُقرأ بتقنية OCR وقد تتطلب مراجعة.</p><label>نص الأسئلة (يمكن تعديله)</label><textarea id="batchText" rows="9" placeholder="السؤال: ما ناتج 2 + 3؟&#10;أ) 4&#10;ب) 5&#10;ج) 6&#10;د) 7&#10;الإجابة: ب&#10;&#10;السؤال: ..."></textarea><button type="button" id="parseBtn">استخراج أول 10 أسئلة ومراجعتها</button><div id="batchPreview"></div></section><section class="card"><h2>الأسئلة المضافة: <span id="count">0</span></h2><div id="items"></div></section></div></main><script src="config.js"></script><script>
+const $=id=>document.getElementById(id);let session=null;const cfg=window.NAFIS_CONFIG||{};
+function msg(t){$('message').textContent=t}
+function ready(){return cfg.url?.startsWith('https://')&&!!cfg.anonKey}
+function base(){return cfg.url.replace(/\/$/,'')}
+async function api(path,options={}){const r=await fetch(base()+path,{...options,headers:{apikey:cfg.anonKey,Authorization:'Bearer '+(session?.access_token||cfg.anonKey),...(options.headers||{})}});if(!r.ok){const detail=(await r.text()).slice(0,500);if(r.status===401&&path.startsWith('/rest/')){session=null;sessionStorage.removeItem('nafis_teacher');$('login').classList.remove('hidden');$('dashboard').classList.add('hidden')}throw Error('HTTP '+r.status+': '+detail)}if(r.status===204)return null;const t=await r.text();return t?JSON.parse(t):null}
+function show(){ $('login').classList.toggle('hidden',!!session);$('dashboard').classList.toggle('hidden',!session);if(session)load()}
+async function login(){try{if(!ready())throw Error('أضف رابط مشروع Supabase إلى config.js أولاً');const r=await api('/auth/v1/token?grant_type=password',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:$('email').value.trim(),password:$('password').value})});session=r;sessionStorage.setItem('nafis_teacher',JSON.stringify(r));$('password').value='';msg('');show()}catch(e){msg('تعذر الدخول: '+e.message)}}
+function logout(){session=null;sessionStorage.removeItem('nafis_teacher');show()}
+async function upload(file){if(!file)return null;const safe=crypto.randomUUID()+'-'+file.name.replace(/[^a-zA-Z0-9._-]/g,'_');const r=await fetch(base()+'/storage/v1/object/nafis-attachments/'+safe,{method:'POST',headers:{apikey:cfg.anonKey,Authorization:'Bearer '+session.access_token,'Content-Type':file.type||'application/octet-stream','x-upsert':'false'},body:file});if(!r.ok)throw Error('تعذر رفع المرفق: '+await r.text());return base()+'/storage/v1/object/public/nafis-attachments/'+safe}
+$('questionForm').onsubmit=async e=>{e.preventDefault();try{msg('جاري الحفظ...');const file=$('attachment').files[0];if(file&&file.size>8*1024*1024)throw Error('الحد الأقصى للمرفق 8 ميجابايت');const attachment_url=await upload(file);const item={grade:$('grade').value,subject:$('subject').value,skill:$('skill').value.trim(),question:$('question').value.trim(),options:[0,1,2,3].map(i=>$('o'+i).value.trim()),correct_answer:Number($('correct').value),approved:$('approved').checked,attachment_url};await api('/rest/v1/nafis_questions',{method:'POST',headers:{'Content-Type':'application/json','Prefer':'return=minimal'},body:JSON.stringify(item)});$('questionForm').reset();msg('تم حفظ السؤال بنجاح');await load()}catch(e){msg('خطأ: '+e.message)}};
+async function load(){try{const items=await api('/rest/v1/nafis_questions?select=id,grade,subject,question,approved,created_at,attachment_url&order=created_at.desc&limit=500');$('count').textContent=items.length;const box=$('items');box.replaceChildren();items.forEach(q=>{const div=document.createElement('div');div.className='entry';const title=document.createElement('strong');title.textContent=q.subject+' | '+q.question;div.append(title);const meta=document.createElement('p');meta.className='muted';meta.textContent=({'third':'ثالث ابتدائي','sixth':'سادس ابتدائي','middle':'ثالث متوسط'}[q.grade]||q.grade)+' — '+(q.approved?'معتمد':'غير معتمد');div.append(meta);const toggle=document.createElement('button');toggle.textContent=q.approved?'إلغاء الاعتماد':'اعتماد ونشر';toggle.onclick=async()=>{try{await api('/rest/v1/nafis_questions?id=eq.'+encodeURIComponent(q.id),{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({approved:!q.approved})});load()}catch(e){msg(e.message)}};div.append(toggle);const del=document.createElement('button');del.className='danger';del.textContent='حذف';del.onclick=async()=>{if(!confirm('حذف السؤال نهائيًا؟'))return;try{await api('/rest/v1/nafis_questions?id=eq.'+encodeURIComponent(q.id),{method:'DELETE'});load()}catch(e){msg(e.message)}};div.append(del);if(q.attachment_url){const link=document.createElement('a');link.href=q.attachment_url;link.target='_blank';link.rel='noopener noreferrer';link.textContent=' عرض المرفق';div.append(link)}box.append(div)})}catch(e){msg('تعذر جلب الأسئلة: '+e.message)}}
+let batchQuestions=[];
+function loadScript(url){return new Promise((resolve,reject)=>{const el=document.createElement('script');el.src=url;el.onload=resolve;el.onerror=()=>reject(Error('تعذر تحميل أداة قراءة المستند؛ تحقق من الإنترنت'));document.head.append(el)})}
+async function ensureOCR(){if(!window.Tesseract)await loadScript('https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js')}
+async function recognizeImage(image){await ensureOCR();const result=await Tesseract.recognize(image,'ara+eng');return result.data.text||''}
+async function extractFile(){
+ const file=$('batchFile').files[0];if(!file)return msg('اختر ملفًا أولًا');
+ const status=$('extractStatus');$('extractBtn').disabled=true;
+ try{
+  if(file.size>12*1024*1024)throw Error('الحد الأقصى 12 ميجابايت');
+  status.textContent='جاري قراءة المستند...';let content='';const name=file.name.toLowerCase();
+  if(name.endsWith('.txt'))content=await file.text();
+  else if(name.endsWith('.docx')){
+   if(!window.mammoth)await loadScript('https://cdn.jsdelivr.net/npm/mammoth@1.9.1/mammoth.browser.min.js');
+   content=(await mammoth.extractRawText({arrayBuffer:await file.arrayBuffer()})).value;
+  }else if(file.type==='application/pdf'||name.endsWith('.pdf')){
+   if(!window.pdfjsLib)await loadScript('https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js');
+   pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+   const pdf=await pdfjsLib.getDocument({data:await file.arrayBuffer()}).promise;
+   if(pdf.numPages>30)throw Error('الحد الأقصى 30 صفحة');
+   for(let i=1;i<=pdf.numPages;i++){
+    status.textContent='جاري معالجة صفحة '+i+' من '+pdf.numPages;
+    const page=await pdf.getPage(i),txt=await page.getTextContent();
+    let pageText=txt.items.map(x=>x.str+(x.hasEOL?'\n':' ')).join('').trim();
+    if(pageText.replace(/\s/g,'').length<35){
+     status.textContent='الصفحة '+i+' مصوّرة، جاري التعرف على النص...';
+     const viewport=page.getViewport({scale:2});const canvas=document.createElement('canvas');
+     canvas.width=Math.ceil(viewport.width);canvas.height=Math.ceil(viewport.height);
+     await page.render({canvasContext:canvas.getContext('2d'),viewport}).promise;
+     pageText=await recognizeImage(canvas);canvas.width=0;canvas.height=0;
+    }
+    content+=pageText+'\n\n';
+   }
+  }else if(file.type.startsWith('image/')||/\.(png|jpe?g|webp|bmp)$/i.test(name)){
+   status.textContent='جاري التعرف على نص الصورة...';content=await recognizeImage(file);
+  }else throw Error('صيغة الملف غير مدعومة');
+  $('batchText').value=content.trim();batchQuestions=[];$('batchPreview').replaceChildren();
+  status.textContent=content.trim()?'تم استخراج النص. راجعه وصحّح الأخطاء ثم اضغط استخراج أول 10 أسئلة.':'لم يتم العثور على نص واضح؛ جرّب صورة أعلى دقة.';
+ }catch(e){status.textContent='تعذر استخراج النص: '+e.message}
+ finally{$('extractBtn').disabled=false}
+}
+
+function parseQuestions(){
+ const raw=$('batchText').value.replace(/\r/g,'\n').replace(/[٠-٩]/g,d=>String('٠١٢٣٤٥٦٧٨٩'.indexOf(d))).replace(/[۰-۹]/g,d=>String('۰۱۲۳۴۵۶۷۸۹'.indexOf(d)));
+ if(!raw.trim())return msg('أدخل نص الأسئلة أولًا');
+ const norm=x=>x.replace(/[\u200e\u200f\u202a-\u202e]/g,'').trim();
+ const start=/^(?:(?:السؤال|سؤال|س)\s*(?:رقم\s*)?\(?\d+\)?\s*[:：.\-)–]?|\(?\d+\)?\s*[).:：-])\s*(.*)$/i;
+ const option=/^(?:\(?([أابجدد]|[1-4]|[A-Da-d])\)?\s*[).:：\-]|\(([أابجد]|[1-4]|[A-Da-d])\))\s*(.+)$/;
+ const answer=/^(?:الإجابة\s*الصحيحة|الإجابة|الجواب|الحل)\s*[:：\-]\s*(.+)$/i;
+ const skill=/^(?:المهارة|نوع\s*المهارة)\s*[:：\-]\s*(.+)$/;
+ const lines=raw.split('\n').map(norm).filter(Boolean);
+ let blocks=[],current=null;
+ for(const line of lines){
+  const m=line.match(start);
+  if(m){if(current)blocks.push(current);current=[];if(m[1])current.push(m[1]);continue}
+  if(current)current.push(line);
+ }
+ if(current)blocks.push(current);
+ // When a document has no numbered questions, look for lines ending in a question mark.
+ if(!blocks.length){for(const line of lines){if(/[؟?]\s*$/.test(line)){if(current)blocks.push(current);current=[line]}else if(current)current.push(line)}if(current)blocks.push(current)}
+ const parsed=[];
+ for(const lines of blocks){let q=[],opts=[],skillText='',answerText='',last=-1;
+  for(const line of lines){let m;
+   if((m=line.match(answer))){answerText=m[1].trim();last=-1;continue}
+   if((m=line.match(skill))){last=-1;continue}
+   if((m=line.match(option))){opts.push(m[3].trim());last=opts.length-1;continue}
+   if(last>=0&&opts.length<=4)opts[last]+=' '+line;
+   else q.push(line);
+  }
+  if(opts.length!==4||!q.join(' ').trim())continue;
+  const map={'أ':0,'ا':0,'ب':1,'ج':2,'د':3,'1':0,'2':1,'3':2,'4':3,'A':0,'B':1,'C':2,'D':3,'a':0,'b':1,'c':2,'d':3};
+  const k=answerText.replace(/[()\s.]/g,'');let correct=-1;
+  if(Object.prototype.hasOwnProperty.call(map,k))correct=map[k];
+  if(correct<0&&answerText)correct=opts.findIndex(x=>x.trim()===answerText.trim());
+  parsed.push({question:q.join(' ').trim(),options:opts,correct,skill:''});
+  if(parsed.length===10)break;
+ }
+ batchQuestions=parsed;renderBatch();
+ $('extractStatus').textContent=parsed.length?'تم التعرف على '+parsed.length+' سؤال مكتمل الخيارات. راجع الإجابة الصحيحة قبل الحفظ.':'لم يتم العثور على أسئلة مكتملة. يجب أن يبدأ كل سؤال برقم، وأن تكون الخيارات الأربعة في أسطر مستقلة مثل أ) ب) ج) د). لا تحفظ نصًا مشوهًا.';
+}
+function renderBatch(){const box=$('batchPreview');box.replaceChildren();const intro=document.createElement('p');intro.textContent='الأسئلة المستخرجة (الحد الأقصى 10): '+batchQuestions.length+' — المرحلة: '+($('batchGrade').selectedOptions[0]?.textContent||'لم تحدد')+' — المادة: '+($('batchSubject').value||'لم تحدد')+' — اكتب المهارة بنفسك لكل سؤال قبل اعتماده.';box.append(intro);batchQuestions.forEach((q,i)=>{const wrap=document.createElement('div');wrap.className='entry';const heading=document.createElement('h3');heading.textContent='سؤال '+(i+1);wrap.append(heading);const make=(label,value,cb)=>{const lab=document.createElement('label');lab.textContent=label;const field=document.createElement('textarea');field.rows=label==='نص السؤال'?2:1;field.value=value;field.oninput=()=>cb(field.value);wrap.append(lab,field)};make('نص السؤال',q.question,v=>q.question=v);for(let j=0;j<4;j++)make('الخيار '+(j+1),q.options[j]||'',v=>q.options[j]=v);make('المهارة (يكتبها المعلم يدويًا)',q.skill,v=>q.skill=v);const label=document.createElement('label');label.textContent='الإجابة الصحيحة';const select=document.createElement('select');['اختر الإجابة','الأولى','الثانية','الثالثة','الرابعة'].forEach((x,k)=>{const opt=document.createElement('option');opt.value=k-1;opt.textContent=x;select.append(opt)});select.value=q.correct;select.onchange=()=>q.correct=Number(select.value);wrap.append(label,select);box.append(wrap)});if(batchQuestions.length){const save=document.createElement('button');save.textContent='حفظ الأسئلة كمراجعة (غير معتمدة)';save.onclick=saveBatch;box.append(save)}}
+async function saveBatch(){if(!session)return msg('سجّل دخول المعلم أولًا');if(!$('batchGrade').value||!$('batchSubject').value)return msg('اختر المرحلة والمادة للأسئلة المستخرجة قبل الحفظ');if(!batchQuestions.length)return;for(const [i,q] of batchQuestions.entries()){if(/[�□]{2,}/.test(q.question)||!q.question||q.options.length!==4||[0,1,2,3].some(j=>!q.options[j]?.trim())||q.correct<0||q.correct>3)return msg('أكمل السؤال '+(i+1)+' وخياراته الأربعة وحدد الإجابة الصحيحة')}const btn=$('batchPreview').querySelector('button:last-child');btn.disabled=true;try{let count=0;for(const q of batchQuestions){await api('/rest/v1/nafis_questions',{method:'POST',headers:{'Content-Type':'application/json','Prefer':'return=minimal'},body:JSON.stringify({grade:$('batchGrade').value,subject:$('batchSubject').value,skill:q.skill,question:q.question,options:q.options,correct_answer:q.correct,approved:false,attachment_url:null})});count++}msg('تم حفظ '+count+' سؤالًا غير معتمد. اعتمدها بعد المراجعة من القائمة.');batchQuestions=[];$('batchText').value='';$('batchPreview').replaceChildren();await load()}catch(e){msg('تم حفظ بعض الأسئلة، ثم توقف الحفظ: '+e.message+' — راجع القائمة قبل المحاولة مجددًا لتجنب التكرار')}finally{if(btn.isConnected)btn.disabled=false}}
+$('extractBtn').onclick=extractFile;$('parseBtn').onclick=parseQuestions;
+try{session=JSON.parse(sessionStorage.getItem('nafis_teacher')||'null')}catch{}if(!ready())msg('الخطوة المتبقية: إضافة رابط مشروع Supabase في ملف config.js');show();
+</script></body></html>
